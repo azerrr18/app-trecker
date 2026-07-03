@@ -30,6 +30,17 @@ def add_learning_session(title, category, duration_minutes, additional_notes):
     conn.commit()
     conn.close()
 
+def get_all_learning_sessions():
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT session_id, title, category, date_added, duration_minutes, additional_notes "
+        "FROM learning_sessions ORDER BY date_added DESC"
+    )
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+
 if __name__ =="__main__":
     create_table()
     add_learning_session("Python Programming", "Programming", 60, "Learned about Python programming")
