@@ -54,3 +54,11 @@ def delete_learning_session(session_id):
     cursor.execute("DELETE FROM learning_sessions WHERE session_id = ?", (session_id,))
     conn.commit()
     conn.close()
+
+def update_learning_session(session_id, title, category, duration_minutes, additional_notes):
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute("UPDATE learning_sessions SET title = ?,category = ?, duration_minutes = ?,additional_notes = ? WHERE session_id = ?",
+     (title, category, duration_minutes, additional_notes, session_id))
+    conn.commit()
+    conn.close()
