@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import database
 
-st.title("Learning Session Tracker")
+st.title("Learning  Tracker")
 database.create_table()
 if "edit_session_id" not in st.session_state:
     st.session_state.edit_session_id = None
@@ -36,7 +36,7 @@ st.subheader("Learning sessions")
 
 
 if st.session_state.edit_session_id is not None:
-    session = database.get_all_learning_sessions(st.session_state.edit_session_id)
+    session = database.get_learning_session_by_id(st.session_state.edit_session_id)
     if session:
         session_id,title,category ,date_added,duration_minutes,additional_notes = session
 
