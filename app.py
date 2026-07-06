@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import database
+import openpyxl
 
 st.title("Learning  Tracker")
 database.create_table()
@@ -109,9 +110,20 @@ if sessions:
             "Date Added",
             "Duration Minutes",
             "Additional Notes",
-        ],
+        ]
+        
     )
     st.dataframe(df)
 else:
     st.info("No learning sessions yet.")
+
+csv = df.to_csv(index = False)
+st.download_button(
+    label = "Download data as CSV",
+    data = csv,
+    file_name = "learning_sessions.csv",
+    mime = "text/csv"
+)
+
+
 
