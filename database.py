@@ -142,3 +142,16 @@ def get_number_of_sessions_this_month():
 
 
 
+def get_minutes_by_day():
+    conn = create_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "SELECT date(date_added) as session_date, SUM(duration_minutes) as total_minutes "
+        "FROM learning_sessions "
+        "WHERE date(date_added) >= date('now', '-6 days') "
+        "GROUP BY session_date "
+        "ORDER BY session_date ASC"
+    )
+    results = cursor.fetchall()
+    conn.close()
+    return results
