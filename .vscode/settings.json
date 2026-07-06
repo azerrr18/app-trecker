@@ -1,3 +1,11 @@
 {
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "streamlit",
+            "database": "\"C:\\Users\\AZER\\Desktop\\app trecker\\database.db\""
+        }
+    ]
 }

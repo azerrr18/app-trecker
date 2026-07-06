@@ -148,7 +148,6 @@ def get_minutes_by_day():
     cursor.execute(
         "SELECT date(date_added) as session_date, SUM(duration_minutes) as total_minutes "
         "FROM learning_sessions "
-        "WHERE date(date_added) >= date('now', '-6 days') "
         "GROUP BY session_date "
         "ORDER BY session_date ASC"
     )

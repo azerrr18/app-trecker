@@ -3,6 +3,7 @@ import streamlit as st
 import plotly.graph_objects as go
 import database
 import pandas as pd
+from datetime import datetime, timedelta
 
 st.title("Learning Session Tracker Dashboard")
 st.subheader("Learning Sessions Overview")
@@ -22,6 +23,7 @@ plotly_chart = st.plotly_chart(fig, use_container_width=True)
 
 minutes_by_day = database.get_minutes_by_day()
 df_day = pd.DataFrame(minutes_by_day, columns = ["Date", "Minutes"])
+df_day["Date"] = pd.to_datetime(df_day["Date"]).dt.date
 st.write("### Total Minutes by Day (Last 7 Days)")
 fig_day = go.Figure(data=[go.Bar(x=df_day["Date"], y=df_day["Minutes"])])
 fig_day.update_layout(title_text="Total Minutes by Day (Last 7 Days)", xaxis_title="Date", yaxis_title="Minutes")
