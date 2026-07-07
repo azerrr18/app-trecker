@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import database
 import openpyxl
+from datetime import datetime
 
 st.title("Learning  Tracker")
 database.create_table()
@@ -33,7 +34,6 @@ if st.button("Add learning session"):
         st.success("Saved learning session")
         st.rerun()
 
-st.subheader("Learning sessions")
 
 
 if st.session_state.edit_session_id is not None:
@@ -124,6 +124,77 @@ st.download_button(
     file_name = "learning_sessions.csv",
     mime = "text/csv"
 )
+
+
+st.subheader("Import learning sessions from Excel")
+uploaded_file = st.file_uploader("Choose an excel file", type = ['xlsx'])
+if uploaded_file is not None:
+    try:
+        df = pd.read_excel(uploaded_file)
+        st.write("### Imported Data")
+        st.dataframe(df)
+        for index, row in df.iterrows():
+            title = row.get("Title")
+            category = row.get("category")
+            duration_minutes = row.get("duration_minutes")
+            additional_notes = row.get("additional_notes")
+            if title and category and duration_minutes:
+                database.add_learning_session(title, category, duration_minutes, additional_notes)
+                st.success(f"Added learning session:{title=}{category}={duration_minutes}={additional_notes}")
+                if st.button("Rerun after import"):
+                    st.success("Import completed. Rerunning the app to reflect changes.")
+                    st.rerun()
+
+    except Exception as e:
+        st.error(f"Error processing the file: {e}") 
+
+st.subheader("Learning session Timer")
+
+if "timer_running" not in st.session_state:
+    st.session_state.timer_running = False
+if "timer_start_time" not in st.session_state:
+    st.session_state.timer_start_time = None
+if "timer_end_time" not in st.session_state:
+    st.session_state.timer_end_time = None
+
+
+if st.button("Start Timer"):
+    if not st.session_state.timer_running:
+        st.session_state.timer_running = True
+        st.session_state.timer_start_time = datetime.now()
+        st.info("Timer started. You can now focus on your learning session.")
+
+if st.button("Stop Timer"):
+    if not st.session_state.timer_running:
+        st.session_state.timer_running = False
+        st.session_state.timer_end_time = datetime.now()
+        st.info("Timer stopped. You can now save your learning session.")
+
+if  st.session_state.timer_start_time is not None and st.session_state.timer_end_time is not None:
+    elapsed_time = st.session_state.timer_end_time - st.session_state.timer_start_time
+    minutes = max(1, round(elapsed_time.total_seconds() // 60))
+    st.success(f"Timer completed! Total time: {minutes} minutes.")
+    st.info("You can now add this session to your learning sessions.")
+
+    st.subheader("Save this session")
+    timer_title = st.text_input("Enter the title of the learning session",key="timer_title")
+    timer_category = st.selectbox(
+        "Select the category of the learning session",
+        ["Programming", "Language", "Framework", "Other"],
+        key="timer_category",
+    )
+    timer_notes = st.text_area("Enter any additional notes", value="", key="timer_notes")
+    st.info(f"Duration: {minutes} minutes")
+
+    if st.button("Save this session"):
+        if not timer_title.strip():
+            st.error("Please enter a title for the learning session.")
+        else:
+            database.add_learning_session(timer_title, timer_category, minutes, timer_notes)
+            st.success("Saved learning session")
+            st.session_state.timer_start_time = None
+            st.session_state.timer_end_time = None
+            st.rerun()
 
 
 
