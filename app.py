@@ -159,20 +159,23 @@ if "timer_end_time" not in st.session_state:
 
 
 if st.button("Start Timer"):
-    if not st.session_state.timer_running:
+    if not  st.session_state.timer_running:
         st.session_state.timer_running = True
         st.session_state.timer_start_time = datetime.now()
         st.info("Timer started. You can now focus on your learning session.")
 
 if st.button("Stop Timer"):
-    if not st.session_state.timer_running:
+    if  st.session_state.timer_running:
         st.session_state.timer_running = False
         st.session_state.timer_end_time = datetime.now()
         st.info("Timer stopped. You can now save your learning session.")
 
+st.write(st.session_state.timer_start_time)
+st.write(st.session_state.timer_end_time)
+
 if  st.session_state.timer_start_time is not None and st.session_state.timer_end_time is not None:
     elapsed_time = st.session_state.timer_end_time - st.session_state.timer_start_time
-    minutes = max(1, round(elapsed_time.total_seconds() // 60))
+    minutes = max(1, int(elapsed_time.total_seconds() // 60))
     st.success(f"Timer completed! Total time: {minutes} minutes.")
     st.info("You can now add this session to your learning sessions.")
 
