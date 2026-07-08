@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import database
-import openpyxl
 from datetime import datetime
 
 st.title("Learning  Tracker")
